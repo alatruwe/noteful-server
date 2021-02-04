@@ -6,20 +6,12 @@ const NotesService = require("./notes-services");
 const notesRouter = express.Router();
 const jsonParser = express.json();
 
-const serializeNote = (note) => ({
-  id: note.id,
-  title: xss(note.title),
-  content: xss(note.content),
-  date_created: note.date_created,
-  folder_id: note.folfer_id,
-});
-
 notesRouter
   .route("/")
   .get((req, res, next) => {
     NotesService.getAllNotes(req.app.get("db"))
       .then((notes) => {
-        res.json(notes.map(serializeNote));
+        res.json(notes);
       })
       .catch(next);
   })
@@ -62,7 +54,13 @@ notesRouter
       .catch(next);
   })
   .get((req, res, next) => {
-    res.json(serializeNote(res.note));
+    res.json({
+      id: res.note.id,
+      title: xss(res.note.title),
+      content: xss(res.note.content),
+      date_created: res.note.date_created,
+      folder_id: res.note.folfer_id,
+    });
   })
   .delete((req, res, next) => {
     NotesService.deleteNote(req.app.get("db"), req.params.note_id)

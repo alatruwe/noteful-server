@@ -21,14 +21,14 @@ describe(`Folders service object`, function () {
   after("disconnect from db", () => db.destroy());
 
   // clean the data
-  before("clean the table", () => db("noteful_folders").truncate());
+  before("clean the table", () =>
+    db.raw("TRUNCATE noteful_folders, noteful_notes RESTART IDENTITY CASCADE")
+  );
 
   // remove any table data so that each test has a clean start
-  afterEach("cleanup", () => db("noteful_folders").truncate());
-
-  before("clean the table", () => db("noteful_folders").truncate());
-
-  afterEach("cleanup", () => db("noteful_folders").truncate());
+  afterEach("cleanup", () =>
+    db.raw("TRUNCATE noteful_folders, noteful_notes RESTART IDENTITY CASCADE")
+  );
 
   describe(`GET /api/folders`, () => {
     //test when database is empty
