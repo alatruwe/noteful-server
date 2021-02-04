@@ -1,10 +1,10 @@
-const path = require('path')
-const express = require('express')
-const xss = require('xss')
-const FoldersService = require('./folders-service')
+const path = require("path");
+const express = require("express");
+const xss = require("xss");
+const FoldersService = require("./folders-services");
 
-const foldersRouter = express.Router()
-const jsonParser = express.json()
+const foldersRouter = express.Router();
+const jsonParser = express.json();
 
 foldersRouter
   .route("/")
@@ -16,8 +16,8 @@ foldersRouter
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { name } = req.body;
-    const newFolder = { name };
+    const { folder_name } = req.body;
+    const newFolder = { folder_name };
 
     // validation
     for (const [key, value] of Object.entries(newFolder)) {
@@ -28,7 +28,7 @@ foldersRouter
       }
     }
 
-    FoldersService.insertFolder(req.app.get("db"), newFolder
+    FoldersService.insertFolder(req.app.get("db"), newFolder)
       .then((folder) => {
         res
           .status(201)
@@ -56,9 +56,8 @@ foldersRouter
   .get((req, res, next) => {
     res.json({
       id: res.folder.id,
-      name: xss(res.folder.name),
+      folder_name: xss(res.folder.folder_name),
     });
-  })
-
+  });
 
 module.exports = foldersRouter;
